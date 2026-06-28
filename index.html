@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Egg Miner</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 15px;
+            text-align: center;
+        }
+        .profile-box {
+            background: linear-gradient(135deg, #bdc3c7, #2c3e50);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            background-color: #1f1f1f;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .stat-box {
+            flex: 1;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f1c40f;
+        }
+        .dragon-section {
+            background-color: #1c2833;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 1px solid #34495e;
+        }
+        .egg-display {
+            font-size: 60px;
+            margin: 15px 0;
+            animation: float 2s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        /* Vertical List Layout */
+        .action-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .action-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1a252f;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid #e67e22;
+            text-align: left;
+        }
+        .action-info h4 {
+            margin: 0;
+            font-size: 16px;
+        }
+        .action-info p {
+            margin: 5px 0 0 0;
+            color: #e67e22;
+            font-size: 14px;
+        }
+        .btn {
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn:hover { background-color: #d35400; }
+        .btn-sell { background-color: #2ecc71; }
+        .btn-sell:hover { background-color: #27ae60; }
+        
+        #admin-panel {
+            display: none;
+            background-color: #3a1a1a;
+            border: 2px dashed #e74c3c;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-box">
+        <h3 id="username">Loading Trainer...</h3>
+        <p style="font-size: 12px; color: #ccc;">User ID: <span id="user-id">-</span></p>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-box">
+            <div>Gold Balance</div>
+            <div class="stat-value"><span id="user-balance">0</span> PTS</div>
+        </div>
+        <div class="stat-box">
+            <div>Dragon Eggs</div>
+            <div class="stat-value" style="color: #e67e22;"><span id="egg-count">0</span> 🥚</div>
+        </div>
+    </div>
+
+    <div class="dragon-section">
+        <h3>Dragon Hatchery</h3>
+        <div class="egg-display">🥚</div>
+        <p style="color: #aaa; font-size: 14px;">Collect eggs from tasks and sell them for gold!</p>
+    </div>
+
+    <h3>Hatchery Actions</h3>
+    <div class="action-list">
+        <div class="action-item">
+            <div class="action-info">
+                <h4>Claim Daily Dragon Egg</h4>
+                <p>+1 Dragon Egg</p>
+            </div>
+            <button class="btn" id="claim-btn" onclick="claimEgg()">Claim</button>
+        </div>
+
+        <div class="action-item" style="border-left-color: #2ecc71;">
+            <div class="action-info">
+                <h4>Sell Dragon Eggs</h4>
+                <p>Value: 1 Egg = 150 PTS</p>
+            </div>
+            <button class="btn btn-sell" onclick="sellEggs()">Sell All</button>
+        </div>
+    </div>
+
+    <div id="admin-panel">
+        <h3 style="color: #e74c3c;">⚙️ Dragon Master Panel</h3>
+        <p>Authorized Admin Access Only.</p>
+        <button class="btn" style="background-color: #e74c3c;" onclick="resetData()">Reset All Database</button>
+    </div>
+
+    <script>
+        // Telegram WebApp Init
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        // ⚠️ မိမိရဲ့ Telegram User ID ကို ဒီမှာ အစားထိုးပါ (Admin Control အတွက်)
+        const ADMIN_ID = 123456789; 
+
+        // Game Variables
+        let goldBalance = 0;
+        let dragonEggs = 0;
+
+        // Get Telegram User
+        const user = tg.initDataUnsafe?.user;
+
+        if (user) {
+            document.getElementById('username').innerText = `🐲 Trainer: ${user.first_name} ${user.last_name || ''}`;
+            document.getElementById('user-id').innerText = user.id;
+
+            // Admin Panel Visibility Check
+            if (user.id === ADMIN_ID) {
+                document.getElementById('admin-panel').style.display = 'block';
+            }
+        } else {
+            document.getElementById('username').innerText = "Opened outside Telegram";
+        }
+
+        // Claim Egg Function
+        function claimEgg() {
+            dragonEggs += 1;
+            document.getElementById('egg-count').innerText = dragonEggs;
+            alert("Success! You claimed 1 Dragon Egg 🥚");
+            
+            // TODO: Connect Firebase to save dragonEggs
+        }
+
+        // Sell Eggs Function
+        function sellEggs() {
+            if (dragonEggs <= 0) {
+                alert("You don't have any Dragon Eggs to sell!");
+                return;
+            }
+            
+            let earnings = dragonEggs * 150; // ဥတစ်လုံးကို 150 PTS
+            goldBalance += earnings;
+            alert(`You sold ${dragonEggs} Eggs and earned ${earnings} PTS! 💰`);
+            
+            dragonEggs = 0;
+            document.getElementById('egg-count').innerText = dragonEggs;
+            document.getElementById('user-balance').innerText = goldBalance;
+
+            // TODO: Connect Firebase to update balance & eggs
+        }
+
+        // Admin Reset Function
+        function resetData() {
+            if(confirm("Are you sure you want to reset data?")) {
+                goldBalance = 0;
+                dragonEggs = 0;
+                document.getElementById('egg-count').innerText = 0;
+                document.getElementById('user-balance').innerText = 0;
+                alert("Database Reset Successful.");
+            }
+        }
+    </script>
+</body>
+</html>

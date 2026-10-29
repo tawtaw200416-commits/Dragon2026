@@ -1,221 +1,329 @@
+𝓨𝓪 𝓨𝓪⁠⁣:
+`
 <!DOCTYPE html>
-<html lang="en">
+<html lang="my">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragon Egg Miner</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>SHWELOTTERY WINGO</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
+            background-color: #0b0f19;
+            color: #fff;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             margin: 0;
-            padding: 15px;
-            text-align: center;
         }
-        .profile-box {
-            background: linear-gradient(135deg, #bdc3c7, #2c3e50);
+        .container {
+            background-color: #0e1626;
+            border: 2px solid #00d2ff;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
             padding: 20px;
             border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            width: 320px;
+            text-align: center;
         }
-        .stats-container {
-            display: flex;
-            justify-content: space-around;
-            background-color: #1f1f1f;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+        h2 {
+            color: #00d2ff;
+            margin-bottom: 5px;
+            font-size: 20px;
         }
-        .stat-box {
-            flex: 1;
+        p {
+            color: #8ab4f8;
+            font-size: 13px;
+            margin-bottom: 15px;
         }
-        .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #f1c40f;
-        }
-        .dragon-section {
-            background-color: #1c2833;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            border: 1px solid #34495e;
-        }
-        .egg-display {
-            font-size: 60px;
-            margin: 15px 0;
-            animation: float 2s ease-in-out infinite;
-        }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-        /* Vertical List Layout */
-        .action-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .action-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #1a252f;
-            padding: 15px;
-            border-radius: 10px;
-            border-left: 5px solid #e67e22;
+        .label-text {
+            color: #8ab4f8;
+            font-size: 12px;
+            margin-bottom: 5px;
             text-align: left;
         }
-        .action-info h4 {
-            margin: 0;
-            font-size: 16px;
+        .input-box {
+            background-color: #070a12;
+            border: 1px solid #00d2ff;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 20px;
+            letter-spacing: 5px;
+            color: #00d2ff;
+            border-radius: 8px;
+            text-align: center;
         }
-        .action-info p {
-            margin: 5px 0 0 0;
-            color: #e67e22;
-            font-size: 14px;
+        .result-box {
+            background-color: #10203d;
+            border: 1px solid #00d2ff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            min-height: 55px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
-        .btn {
-            background-color: #e67e22;
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .key {
+            background-color: #172a45;
+            color: #fff;
+            border: 1px solid #1f4068;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .key:active {
+            background-color: #00d2ff;
+            color: #000;
+        }
+        .btn-calculate {
+            background: linear-gradient(to right, #00c6ff, #0072ff);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
         }
-        .btn:hover { background-color: #d35400; }
-        .btn-sell { background-color: #2ecc71; }
-        .btn-sell:hover { background-color: #27ae60; }
-        
-        #admin-panel {
+        .btn-clear {
+            background-color: #3d1212;
+            border: 1px solid #ff4d4d;
+            color: #ff4d4d;
+        }
+        .footer-text {
+            margin-top: 15px;
+            font-size: 11px;
+            color: #57606f;
+        }
+        .admin-btn {
+            display: inline-block;
+            background-color: #00d2ff;
+            color: #0b0f19;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        /* Custom PIN Modal Styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(11, 15, 25, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
             display: none;
-            background-color: #3a1a1a;
-            border: 2px dashed #e74c3c;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 25px;
+        }
+        .modal-content {
+            background-color: #0e1626;
+            border: 2px solid #00d2ff;
+            padding: 20px;
+            border-radius: 12px;
+            width: 280px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.3);
+        }
+        .modal-input {
+            background-color: #070a12;
+            border: 1px solid #00d2ff;
+            color: #00d2ff;
+            padding: 10px;
+            font-size: 18px;
+            width: 80%;
+            text-align: center;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+        }
+        .modal-btn-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .modal-btn-submit {
+            background-color: #00d2ff;
+            color: #0b0f19;
+        }
+        .modal-btn-cancel {
+            background-color: #3d1212;
+            color: #ff4d4d;
+            border: 1px solid #ff4d4d;
+        }
+        /* Loading Animation */
+        .spinner {
+            border: 3px solid rgba(0, 210, 255, 0.2);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border-left-color: #00d2ff;
+            animation: spin 1s linear infinite;
+            margin-bottom: 5px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-    <div class="profile-box">
-        <h3 id="username">Loading Trainer...</h3>
-        <p style="font-size: 12px; color: #ccc;">User ID: <span id="user-id">-</span></p>
+<div class="container">
+    <h2>SHWELOTTERY WINGO</h2>
+    <p>နောက်ဆုံးထွက် ဂဏန်း ၅ လုံးကို ရိုက်ထည့်ပါ</p>
+    
+    <div class="label-text">ထည့်သွင်းထားသော ဂဏန်းများ (၅ လုံး)</div>
+    <div class="input-box" id="display">- - - - -</div>
+    
+    <div class="result-box" id="resultArea">
+        <span style="font-size: 14px; color: #fff;">ဂဏန်းများရိုက်ထည့်ပြီး "တွက်မည်" ကိုနှိပ်ပါ</span>
     </div>
 
-    <div class="stats-container">
-        <div class="stat-box">
-            <div>Gold Balance</div>
-            <div class="stat-value"><span id="user-balance">0</span> PTS</div>
+    <div class="keypad">
+        <button class="key" onclick="pressNum('1')">1</button>
+        <button class="key" onclick="pressNum('2')">2</button>
+        <button class="key" onclick="pressNum('3')">3</button>
+        <button class="key" onclick="pressNum('4')">4</button>
+        <button class="key" onclick="pressNum('5')">5</button>
+        <button class="key" onclick="pressNum('6')">6</button>
+        <button class="key" onclick="pressNum('7')">7</button>
+        <button class="key" onclick="pressNum('8')">8</button>
+        <button class="key" onclick="pressNum('9')">9</button>
+        <button class="key btn-clear" onclick="clearNum()">ဖျက်ရန်</button>
+        <button class="key" onclick="pressNum('0')">0</button>
+        <button class="key btn-calculate" onclick="checkPinAndCalculate()">တွက်မည်</button>
+    </div>
+    
+    <div class="footer-text">SHWELOTTERY WINGO © 2026 | ALL RIGHTS RESERVED</div>
+</div>
+
+<!-- Custom PIN Modal -->
+<div class="modal-overlay" id="pinModal">
+    <div class="modal-content">
+        <h3 style="color: #00d2ff; margin-top: 0; font-size: 16px;">🔐 PIN နံပါတ် လိုအပ်သည်</h3>
+        <p style="font-size: 12px; color: #8ab4f8; margin-bottom: 10px;">ကျေးဇူးပြု၍ PIN နံပါတ်ကို ထည့်ပါ</p>
+        <input type="password" id="modalPinInput" class="modal-input" maxlength="10" placeholder="••••••">
+        <div class="modal-btn-group">
+            <button class="modal-btn modal-btn-cancel" onclick="closePinModal()">ပိတ်ရန်</button>
+            <button class="modal-btn modal-btn-submit" onclick="submitPin()">အတည်ပြု</button>
         </div>
-        <div class="stat-box">
-            <div>Dragon Eggs</div>
-            <div class="stat-value" style="color: #e67e22;"><span id="egg-count">0</span> 🥚</div>
-        </div>
     </div>
+</div>
 
-    <div class="dragon-section">
-        <h3>Dragon Hatchery</h3>
-        <div class="egg-display">🥚</div>
-        <p style="color: #aaa; font-size: 14px;">Collect eggs from tasks and sell them for gold!</p>
-    </div>
+<script>
+    let currentInput = "";
+    const CORRECT_PIN = "200516"; // သတ်မှတ်ထားသော PIN နံပါတ်
+    const PIN_STORAGE_KEY = "wingo_pin_verified_v2";
 
-    <h3>Hatchery Actions</h3>
-    <div class="action-list">
-        <div class="action-item">
-            <div class="action-info">
-                <h4>Claim Daily Dragon Egg</h4>
-                <p>+1 Dragon Egg</p>
-            </div>
-            <button class="btn" id="claim-btn" onclick="claimEgg()">Claim</button>
-        </div>
+    function pressNum(num) {
+        if (currentInput.length < 5) {
+            currentInput += num;
+            updateDisplay();
+        }
+    }
 
-        <div class="action-item" style="border-left-color: #2ecc71;">
-            <div class="action-info">
-                <h4>Sell Dragon Eggs</h4>
-                <p>Value: 1 Egg = 150 PTS</p>
-            </div>
-            <button class="btn btn-sell" onclick="sellEggs()">Sell All</button>
-        </div>
-    </div>
+    function clearNum() {
+        currentInput = "";
+        updateDisplay();
+        document.getElementById("resultArea").innerHTML = `
+            <span style="font-size: 14px; color: #fff;">ဂဏန်းများရိုက်ထည့်ပြီး "တွက်မည်" ကိုနှိပ်ပါ</span>
+        `;
+    }
 
-    <div id="admin-panel">
-        <h3 style="color: #e74c3c;">⚙️ Dragon Master Panel</h3>
-        <p>Authorized Admin Access Only.</p>
-        <button class="btn" style="background-color: #e74c3c;" onclick="resetData()">Reset All Database</button>
-    </div>
+    function updateDisplay() {
+        let displayText = currentInput.padEnd(5, '_');
+        document.getElementById("display").innerText = displayText.split('').join(' ');
+    }
 
-    <script>
-        // Telegram WebApp Init
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+    function checkPinAndCalculate() {
+        if (currentInput.length !== 5) {
+            alert("ကျေးဇူးပြု၍ ဂဏန်း ၅ လုံး အပြည့်ထည့်ပါ။");
+            return;
+        }
 
-        // ⚠️ မိမိရဲ့ Telegram User ID ကို ဒီမှာ အစားထိုးပါ (Admin Control အတွက်)
-        const ADMIN_ID = 123456789; 
+        let isVerified = localStorage.getItem(PIN_STORAGE_KEY) === "true";
 
-        // Game Variables
-        let goldBalance = 0;
-        let dragonEggs = 0;
-
-        // Get Telegram User
-        const user = tg.initDataUnsafe?.user;
-
-        if (user) {
-            document.getElementById('username').innerText = `🐲 Trainer: ${user.first_name} ${user.last_name || ''}`;
-            document.getElementById('user-id').innerText = user.id;
-
-            // Admin Panel Visibility Check
-            if (user.id === ADMIN_ID) {
-                document.getElementById('admin-panel').style.display = 'block';
-            }
+if (!isVerified) {
+            document.getElementById("pinModal").style.display = "flex";
+            document.getElementById("modalPinInput").value = "";
+            document.getElementById("modalPinInput").focus();
         } else {
-            document.getElementById('username').innerText = "Opened outside Telegram";
+            executeCalculation();
         }
+    }
 
-        // Claim Egg Function
-        function claimEgg() {
-            dragonEggs += 1;
-            document.getElementById('egg-count').innerText = dragonEggs;
-            alert("Success! You claimed 1 Dragon Egg 🥚");
-            
-            // TODO: Connect Firebase to save dragonEggs
+    function closePinModal() {
+        document.getElementById("pinModal").style.display = "none";
+    }
+
+    function submitPin() {
+        let userPin = document.getElementById("modalPinInput").value;
+        let resultBox = document.getElementById("resultArea");
+
+        if (userPin === CORRECT_PIN) {
+            localStorage.setItem(PIN_STORAGE_KEY, "true");
+            closePinModal();
+            executeCalculation();
+        } else {
+            closePinModal();
+            resultBox.innerHTML = 
+                <span style="font-size: 13px; color: #ff4d4d; text-align: center;">⚠️ PIN နံပါတ် မှားယွင်းနေပါသည်</span>
+                <a href="https://t.me/skybilly20" target="_blank" class="admin-btn">Admin ကို ဆက်သွယ်ရန် (@skybilly20)</a>
+            ;
         }
+    }
 
-        // Sell Eggs Function
-        function sellEggs() {
-            if (dragonEggs <= 0) {
-                alert("You don't have any Dragon Eggs to sell!");
-                return;
+    function executeCalculation() {
+        let resultBox = document.getElementById("resultArea");
+
+        resultBox.innerHTML = 
+            <div class="spinner"></div>
+            <span style="font-size: 12px; color: #00d2ff;">⚡ Server မှ Data တွက်ချက်နေပါသည်... (3s)</span>
+        ;
+
+        let inputToProcess = currentInput;
+
+        setTimeout(() => {
+            let sum = 0;
+            for (let i = 0; i < inputToProcess.length; i++) {
+                sum += parseInt(inputToProcess[i]);
             }
-            
-            let earnings = dragonEggs * 150; // ဥတစ်လုံးကို 150 PTS
-            goldBalance += earnings;
-            alert(`You sold ${dragonEggs} Eggs and earned ${earnings} PTS! 💰`);
-            
-            dragonEggs = 0;
-            document.getElementById('egg-count').innerText = dragonEggs;
-            document.getElementById('user-balance').innerText = goldBalance;
 
-            // TODO: Connect Firebase to update balance & eggs
-        }
+            let resultText = "";
 
-        // Admin Reset Function
-        function resetData() {
-            if(confirm("Are you sure you want to reset data?")) {
-                goldBalance = 0;
-                dragonEggs = 0;
-                document.getElementById('egg-count').innerText = 0;
-                document.getElementById('user-balance').innerText = 0;
-                alert("Database Reset Successful.");
+            // ဂဏန်း ၅ လုံး ပေါင်းလဒ် စုံ/မ စစ်ဆေးခြင်း (Even = အသေး, Odd = အကြီး)
+            if (sum % 2 === 0) {
+                // စုံဂဏန်း ဖြစ်ပါက အသေး
+                resultText = <strong style="font-size: 22px; color: #00d2ff;">အသေး (SMALL)</strong>;
+            } else {
+                // မဂဏန်း ဖြစ်ပါက အကြီး
+                resultText = <strong style="font-size: 22px; color: #00d2ff;">အကြီး (BIG)</strong>;
             }
-        }
-    </script>
+
+            resultBox.innerHTML = resultText;
+
+            currentInput = "";
+            updateDisplay();
+        }, 3000); 
+    }
+</script>
+
 </body>
-</html>
+</html>`

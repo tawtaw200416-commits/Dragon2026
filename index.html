@@ -270,7 +270,7 @@
     </div>
 </div>
 
-<!-- Protected Script with Fixed Precision Calculation Logic -->
+<!-- Protected Script with Fixed Precision & Corrected Rule Logic -->
 <script>
     (function() {
         // Live Myanmar Standard Time (UTC+6:30) Clock
@@ -362,13 +362,13 @@
                 let numValue = parseInt(inputToProcess, 10);
                 let divisionResult = numValue / 8; // 8 ဖြင့် စားခြင်း
                 
-                // toFixed(4) သုံးခြင်းဖြင့် JavaScript ၏ float အမှားအယွင်းများကို ရှင်းလင်းပေးသည် (ဥပမာ 4742.5 ကို တိကျစေရန်)
-                let resultStr = divisionResult.toFixed(4); 
+                // ဒသမဂဏန်း တိကျမှန်ကန်စေရန် toFixed(2) ဖြင့် ကန့်သတ်ခြင်း (Calculator ကဲ့သို့ တိကျစေရန်)
+                let resultStr = divisionResult.toFixed(2); 
                 
                 let targetDigit = 0;
 
                 if (resultStr.includes('.')) {
-                    // ဒသမကိန်းများထွက်လာပါက -> ဒသမအစ နှစ်နေရာကပ်လျက် (ဒသမနောက် ပထမဂဏန်း) ကို တိကျစွာ ယူပါမည်။
+                    // ဒသမကိန်းများထွက်လာပါက (ဥပမာ - 4742.50) -> ဒသမနောက် ပထမဂဏန်းကို ယူပါမည်။
                     let parts = resultStr.split('.');
                     let decimalPart = parts[1];
                     if (decimalPart && decimalPart.length > 0) {

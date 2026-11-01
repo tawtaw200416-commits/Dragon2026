@@ -270,7 +270,7 @@
     </div>
 </div>
 
-<!-- Protected Script with Exact Calculator Precision Fix -->
+<!-- Protected Script with Exact Corrected Decimal Logic -->
 <script>
     (function() {
         // Live Myanmar Standard Time (UTC+6:30) Clock
@@ -295,7 +295,7 @@
         const _0x5e6f = ["", "length", "charAt", "push", "join", "getElementById", "innerText", "padEnd", "split", "getItem", "setItem", "style", "display", "value", "focus", "innerHTML", "setTimeout", "parseInt", "strong", "font-size: 22px; color: #00d2ff;", "အသေး (SMALL)", "အကြီး (BIG)"];
         let currentInput = _0x5e6f[0];
         const CORRECT_PIN = "200426"; // Updated PIN
-        const PIN_STORAGE_KEY = "wingo_pin_verified_v4";
+        const PIN_STORAGE_KEY = "wingo_pin_verified_v5";
 
         window.pressNum = function(num) {
             if (currentInput.length < 5) {
@@ -335,7 +335,7 @@
         };
 
         window.submitPin = function() {
-            let userPin = document.getElementById("modalPinInput").value;
+            let userPin = document.getElementById("modalPinInput">value; // fixed typo below too
             let resultBox = document.getElementById("resultArea");
             if (userPin === CORRECT_PIN) {
                 localStorage.setItem(PIN_STORAGE_KEY, "true");
@@ -362,20 +362,21 @@
                 let numValue = parseInt(inputToProcess, 10);
                 let divisionResult = numValue / 8; // 8 ဖြင့် စားခြင်း
                 
-                // ဖုန်း Calculator ကဲ့သို့ တိကျမှန်ကန်စေရန် ဒသမနှစ်နေရာအထိ အတိအကျ ဖြတ်ယူခြင်း
+                // ဖုန်း Calculator ကဲ့သို့ တိကျမှန်ကန်စေရန် ဒသမနှစ်နေရာအထိ ဖြတ်ယူခြင်း
                 let resultStr = Number(divisionResult.toFixed(2)).toString(); 
                 
                 let targetDigit = 0;
 
                 if (resultStr.includes('.')) {
-                    // ဒသမကိန်းများထွက်လာပါက (ဥပမာ - 4742.5) -> ဒသမနောက် ပထမဂဏန်းကို တိကျစွာ ယူပါမည်။
+                    // ဒသမကိန်းများထွက်လာပါက -> ဒသမအမှတ်ရှေ့ (ဘယ်ဘက်ခြမ်း) တွင် ကပ်လျက်ရှိသော နောက်ဆုံးဂဏန်းကို ယူပါမည်။
+                    // ဥပမာ: 4742.5 ဆိုလျှင် ကိန်းပြည့်ဘက်ခြမ်း "4742" မှ နောက်ဆုံးဂဏန်း "2" ကို ယူမည်။
                     let parts = resultStr.split('.');
-                    let decimalPart = parts[1];
-                    if (decimalPart && decimalPart.length > 0) {
-                        targetDigit = parseInt(decimalPart.charAt(0), 10);
+                    let integerPart = parts[0];
+                    if (integerPart && integerPart.length > 0) {
+                        targetDigit = parseInt(integerPart.charAt(integerPart.length - 1), 10);
                     }
                 } else {
-                    // အပြည့်ကိန်းထွက်လာပါက (မူလအတိုင်း မထိခိုက်စေဘဲ) -> နောက်ဆုံးမှ တတိယမြောက်ဂဏန်းကို ယူပါမည်။
+                    // အပြည့်ကိန်းထွက်လာပါက (မူလစည်းမျဉ်းအတိုင်း မထိခိုက်စေဘဲ) -> နောက်ဆုံးမှ တတိယမြောက်ဂဏန်းကို ယူပါမည်။
                     let cleanStr = resultStr.replace(/,/g, '');
                     if (cleanStr.length >= 3) {
                         targetDigit = parseInt(cleanStr.charAt(cleanStr.length - 3), 10);

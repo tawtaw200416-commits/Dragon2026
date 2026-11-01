@@ -270,7 +270,7 @@
     </div>
 </div>
 
-<!-- Protected Script with Exact 33-Division and Position Rule Logic -->
+<!-- Protected Script with Updated Calculation Rule Logic -->
 <script>
     (function() {
         // Live Myanmar Standard Time (UTC+6:30) Clock
@@ -361,52 +361,32 @@
             setTimeout(() => {
                 let numValue = parseInt(inputToProcess, 10);
                 let divisionResult = numValue / 8; // 8 ဖြင့် စားခြင်း
-                let resultStr = divisionResult.toFixed(12); // ဒသမ တိကျစေရန် fixed လုပ်ခြင်း
+                let resultStr = divisionResult.toString(); 
                 
-                let firstDigit = 0; // ရှေ့ဆုံးဂဏန်း (ကိန်းပြည့်အစိတ်အပိုင်း၏ ပထမဆုံးဂဏန်း)
-                let decimalFirstDigit = 0; // ဒသမနောက်ကပ်လျက် ဂဏန်း (ဒသမအစိတ်အပိုင်း၏ ပထမဆုံးဂဏန်း)
+                let targetDigit = 0;
 
                 if (resultStr.includes('.')) {
+                    // ဒသမကိန်းများထွက်လာပါက (ဥပမာ - 2394.25) -> ဒသမအစ နှစ်နေရာကပ်လျက် (ဒသမနောက် ပထမဂဏန်း) ကို ယူပါမည်။
                     let parts = resultStr.split('.');
-                    let integerPart = parts[0].replace(/,/g, '');
                     let decimalPart = parts[1];
-
-                    // ရှေ့ဆုံးဂဏန်းကို တိကျစွာယူရန်
-                    firstDigit = parseInt(integerPart.charAt(0), 10);
-
-                    // ဒသမနောက်ကပ်လျက် ဂဏန်းကို တိကျစွာယူရန်
                     if (decimalPart && decimalPart.length > 0) {
-                        decimalFirstDigit = parseInt(decimalPart.charAt(0), 10);
+                        targetDigit = parseInt(decimalPart.charAt(0), 10);
                     }
                 } else {
+                    // အပြည့်ကိန်းထွက်လာပါက (ဥပမာ - 11,443) -> နောက်ဆုံးမှ တတိယမြောက်ဂဏန်းကို ယူပါမည်။
                     let cleanStr = resultStr.replace(/,/g, '');
-                    firstDigit = parseInt(cleanStr.charAt(0), 10);
-                    decimalFirstDigit = 0;
+                    if (cleanStr.length >= 3) {
+                        targetDigit = parseInt(cleanStr.charAt(cleanStr.length - 3), 10);
+                    } else {
+                        targetDigit = parseInt(cleanStr.charAt(0), 10);
+                    }
                 }
 
-                // 0 to 4 = Small (သေး), 5 to 9 = Big (ကြီး)
-                let isFirstBig = firstDigit >= 5; // true = ကြီး, false = သေး
-                let isDecimalBig = decimalFirstDigit >= 5; // true = ကြီး, false = သေး
-
-                let finalIsBig = false;
-
-                // တောင်းဆိုထားသည့် စည်းမျဉ်းအတိုင်း:
-                // ကြီး + ကြီး = သေး (SMALL)
-                // သေး + ကြီး = သေး (SMALL)
-                // သေး + သေး = ကြီး (BIG)
-                // ကြီး + သေး = ကြီး (BIG)
-                if (isFirstBig && isDecimalBig) {
-                    finalIsBig = false; // သေး (SMALL)
-                } else if (!isFirstBig && isDecimalBig) {
-                    finalIsBig = false; // သေး (SMALL)
-                } else if (!isFirstBig && !isDecimalBig) {
-                    finalIsBig = true; // ကြီး (BIG)
-                } else if (isFirstBig && !isDecimalBig) {
-                    finalIsBig = true; // ကြီး (BIG)
-                }
+                // 0 to 4 = Small (အသေး), 5 to 9 = Big (အကြီး)
+                let isBig = targetDigit >= 5;
 
                 let resultText = "";
-                if (finalIsBig) {
+                if (isBig) {
                     resultText = `<strong style="font-size: 22px; color: #00d2ff;">အကြီး (BIG)</strong>`;
                 } else {
                     resultText = `<strong style="font-size: 22px; color: #00d2ff;">အသေး (SMALL)</strong>`;

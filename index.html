@@ -270,7 +270,7 @@
     </div>
 </div>
 
-<!-- Protected Script with Exact Corrected Decimal Logic -->
+<!-- Protected Script with Corrected Decimal Target Logic -->
 <script>
     (function() {
         // Live Myanmar Standard Time (UTC+6:30) Clock
@@ -335,7 +335,7 @@
         };
 
         window.submitPin = function() {
-            let userPin = document.getElementById("modalPinInput">value; // fixed typo below too
+            let userPin = document.getElementById("modalPinInput", 10).value;
             let resultBox = document.getElementById("resultArea");
             if (userPin === CORRECT_PIN) {
                 localStorage.setItem(PIN_STORAGE_KEY, "true");
@@ -368,15 +368,14 @@
                 let targetDigit = 0;
 
                 if (resultStr.includes('.')) {
-                    // ဒသမကိန်းများထွက်လာပါက -> ဒသမအမှတ်ရှေ့ (ဘယ်ဘက်ခြမ်း) တွင် ကပ်လျက်ရှိသော နောက်ဆုံးဂဏန်းကို ယူပါမည်။
-                    // ဥပမာ: 4742.5 ဆိုလျှင် ကိန်းပြည့်ဘက်ခြမ်း "4742" မှ နောက်ဆုံးဂဏန်း "2" ကို ယူမည်။
+                    // ဒသမကိန်းများထွက်လာပါက -> ဒသမရှေ့က ကပ်လျက်ဂဏန်း (ကိန်းပြည့်အစိတ်အပိုင်း၏ နောက်ဆုံးဂဏန်း) ကို ယူပါမည်။
                     let parts = resultStr.split('.');
-                    let integerPart = parts[0];
+                    let integerPart = parts[0]; // ဥပမာ - 4742
                     if (integerPart && integerPart.length > 0) {
-                        targetDigit = parseInt(integerPart.charAt(integerPart.length - 1), 10);
+                        targetDigit = parseInt(integerPart.charAt(integerPart.length - 1), 10); // ဒသမနှင့် အကပ်ဆုံးဂဏန်း (ဥပမာ - 2)
                     }
                 } else {
-                    // အပြည့်ကိန်းထွက်လာပါက (မူလစည်းမျဉ်းအတိုင်း မထိခိုက်စေဘဲ) -> နောက်ဆုံးမှ တတိယမြောက်ဂဏန်းကို ယူပါမည်။
+                    // အပြည့်ကိန်းထွက်လာပါက (မူလအတိုင်း မထိခိုက်စေဘဲ) -> နောက်ဆုံးမှ တတိယမြောက်ဂဏန်းကို ယူပါမည်။
                     let cleanStr = resultStr.replace(/,/g, '');
                     if (cleanStr.length >= 3) {
                         targetDigit = parseInt(cleanStr.charAt(cleanStr.length - 3), 10);

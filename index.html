@@ -270,7 +270,7 @@
     </div>
 </div>
 
-<!-- Protected Script with Updated Calculation Rule Logic -->
+<!-- Protected Script with Fixed Precision Calculation Logic -->
 <script>
     (function() {
         // Live Myanmar Standard Time (UTC+6:30) Clock
@@ -294,8 +294,8 @@
 
         const _0x5e6f = ["", "length", "charAt", "push", "join", "getElementById", "innerText", "padEnd", "split", "getItem", "setItem", "style", "display", "value", "focus", "innerHTML", "setTimeout", "parseInt", "strong", "font-size: 22px; color: #00d2ff;", "အသေး (SMALL)", "အကြီး (BIG)"];
         let currentInput = _0x5e6f[0];
-        const CORRECT_PIN = "200516";
-        const PIN_STORAGE_KEY = "wingo_pin_verified_v2";
+        const CORRECT_PIN = "200426"; // Updated PIN
+        const PIN_STORAGE_KEY = "wingo_pin_verified_v3";
 
         window.pressNum = function(num) {
             if (currentInput.length < 5) {
@@ -361,19 +361,21 @@
             setTimeout(() => {
                 let numValue = parseInt(inputToProcess, 10);
                 let divisionResult = numValue / 8; // 8 ဖြင့် စားခြင်း
-                let resultStr = divisionResult.toString(); 
+                
+                // toFixed(4) သုံးခြင်းဖြင့် JavaScript ၏ float အမှားအယွင်းများကို ရှင်းလင်းပေးသည် (ဥပမာ 4742.5 ကို တိကျစေရန်)
+                let resultStr = divisionResult.toFixed(4); 
                 
                 let targetDigit = 0;
 
                 if (resultStr.includes('.')) {
-                    // ဒသမကိန်းများထွက်လာပါက (ဥပမာ - 2394.25) -> ဒသမအစ နှစ်နေရာကပ်လျက် (ဒသမနောက် ပထမဂဏန်း) ကို ယူပါမည်။
+                    // ဒသမကိန်းများထွက်လာပါက -> ဒသမအစ နှစ်နေရာကပ်လျက် (ဒသမနောက် ပထမဂဏန်း) ကို တိကျစွာ ယူပါမည်။
                     let parts = resultStr.split('.');
                     let decimalPart = parts[1];
                     if (decimalPart && decimalPart.length > 0) {
                         targetDigit = parseInt(decimalPart.charAt(0), 10);
                     }
                 } else {
-                    // အပြည့်ကိန်းထွက်လာပါက (ဥပမာ - 11,443) -> နောက်ဆုံးမှ တတိယမြောက်ဂဏန်းကို ယူပါမည်။
+                    // အပြည့်ကိန်းထွက်လာပါက -> နောက်ဆုံးမှ တတိယမြောက်ဂဏန်းကို ယူပါမည်။
                     let cleanStr = resultStr.replace(/,/g, '');
                     if (cleanStr.length >= 3) {
                         targetDigit = parseInt(cleanStr.charAt(cleanStr.length - 3), 10);
